@@ -1,0 +1,33 @@
+1) 
+popR C
+1: 6 4
+2: 6 3
+3: 5 3
+4: 5 2
+5: 5 1
+6: 4 1
+7: 3 1
+8: 3 2
+9: 4 2
+10: 6 5
+11: 7 5
+12: 8 5
+
+2)
+popR C
+1: 6 4
+2: 5 4
+3: 6 5
+4: 6 3
+5: 4 4
+6: 5 3
+7: 6 6
+8: 7 5
+9: 3 4
+10: 4 5
+11: 5 2
+12: 8 5
+
+Basically the stack is first in, last out, so it goes through the branches one at a time
+whereas the queue is first in and first out, so it visit each branch one at a time at each iteration
+

@@ -1,0 +1,1698 @@
+midterms 
+wed apr 20th 
+wed may 18th
+
+times:
+5:00PM - 6:05PM  or  5:45PM - 6:50PM
+
+final sat. jun 4, 11:30am - 2:30pm
+interface vs. implementation
+
+
+class Circle
+{
+public:
+circle(double x, double y, double r);
+void scale(double factor);
+void draw();
+double m_x;
+double m_y;
+double m_r;
+};
+
+double area(Circle x);
+
+circle::circle(double x, double y, double r)
+{...
+}
+
+void circle::scale(double factor)
+{...
+}
+
+double area(circle x)
+{...
+}
+
+void circle::draw()
+{...
+}
+
+int main()
+{
+circle blah(8, -3, 3.7); // x, y, radius
+circle c(-2, 5, 10);
+c.draw();
+cout << area(c);
+
+}
+
+lec 3-------------------------------------------------------------------------
+Point.h
+========
+#ifndef POINT_INCLUDED
+#define POINT_INCLUDED
+class Point 
+{
+...
+};
+
+#endif // POINT_INCLUDED
+circle.h
+=========
+
+#ifndef CIRCLE_INCLUDED
+#define CIRCLE_INCLUDED
+
+#include "Point.h"
+class circle
+{
+Point m_center;
+double m_radius;
+};
+
+
+#endif // CIRLCE_INCLUDED
+circle.cpp
+==========
+#include "circle.h"
+
+circlue::circle(...)
+{...}
+
+bool circle::scale(....)
+{...}
+
+double area(const circle& x)
+{...}
+
+myapp.cpp
+============
+
+#include "circle.h"
+
+int main ()
+{
+cirlce c(-2,5,10);
+c.scale(2);
+...
+}
+
+//include guards: indef, define, endif
+
+
+//foward declarations
+
+student.h
+==========
+#ifndef STUDENT_INCLUDED
+#define STUDENT_INCLUDED
+
+class Student
+{
+....
+void enroll(Course* cp);
+...
+Course* m-studylust[10];
+};
+
+#endif
+
+Course.h
+=========
+
+#ifndef COURSE_INCLUDED
+#define COURSE_INCLUDED
+
+class Student;
+
+class Course
+{...
+	Student * m_roster[1000];
+};
+
+endif // COURSE_INCLUDED
+
+class StickFigure
+{
+public:
+StickFigure(double b1, double headDiameter, string nm, double hx, double hy)
+....
+private:
+string m_name;
+double m_bodyLength;
+Circle m_head;
+};
+
+stickFigure::stickFigure(double b1, double headDiameter, string nm, double hx, double hy)
+{
+m_head = Circle(hx, hy, headDiameter / 2); // assigns new values to circle object m_head
+}
+//member initialization list
+//stickFigure::stickFigure(double b1, double headDiameter, string nm, double hx, double hy)
+//:m_name(nm), m_bodyLength(b1), m_head = Circle(hx, hy, headDiameter / 2); // if circle does not have default constructor
+//{
+//
+//}
+
+LEC 4---------------------------------------------------------------------------------------------------------------
+
+class String
+{
+public:
+String (const char* value);
+String();
+~String();
+String(const String& other);
+String& operator = (const String& rhs); // change void later
+void swap(string& other);
+private:
+char* m_text; // allocate enough space 
+int m_len;
+//class invariant:
+//m_text points to a dynamically allocated array of characters 
+// m_len + 1 chars
+//m_len >= 0
+//m_text[m_len] == '\0'
+//OR
+//m_text == nullptr
+//m_len == 0
+};
+
+//diagram
+
+this    m_text
+| |---> | |
+	m_len
+	|5|
+value
+|_| ------>|H|E|l|l|o|\0|
+//
+
+String::String(const char* value)
+{
+if (value == nullptr)
+	value =""; // works because you are creating a empty string and assigning the pointer to the empty string
+
+m_len = strlen(value);
+//m_text = value;   //WRONG!!
+//ex.
+//char buffer [1000];
+//cin.getline(buffer, 1000); // user types Hello
+//String s(buffer);
+//cin.getline(buffer, 1000); // user types wow
+// bad because length is now 5 but actually the size is now 3
+//FIX
+m_text = new char[m_len+1]; // +1 because of zero byte
+strcpy(m_text,value); changes m_text to value until reach zero byte
+//no delete, so it is a resource leak
+
+
+
+}
+
+String::String()
+{
+m_len = strlen("");
+m_text = new char[m_len+1];
+strcpy(m_text,"");
+}
+
+String::~String()
+{
+delete [] m_text;
+}
+
+void h()
+{
+String s("Hello");
+...
+}
+
+int main()
+{
+String t;
+for(...)
+h();
+...
+}
+
+char* f(...)
+{
+....
+}
+
+String x(f(...))
+
+LEC 5--------------------------------------------------------------------------------------------------
+//destructors
+//executes
+//destroys data members
+
+String::String(String& other)
+{
+m_len = other.m_len;
+m_text = new char[m_len+1];
+strcpy(m_text, other.m_text);
+
+void g(String t)
+{
+String u("wow");
+...
+u=t; //u.operator = (t);
+...
+}
+
+//problems of not writing own assignment operator
+//ex when pointer is copied from one object to another, its still points
+//to the same object, which is bad and causes a memory leak
+
+//overloading assigmnent operator
+//The this Pointer
+//When defining member functions for a class, you sometimes want to refer to the calling
+//object. The this pointer is a predefined pointer that points to the calling object. For
+//example, consider a class like the following
+//Notice that this is not the name of the calling object, but is the name of a pointer that
+//points to the calling object. The this pointer cannot have its value changed; it always
+//points to the calling object.
+
+String& String::operator =(const String& rhs)
+{
+//first get rid of old object m_text is pointing
+if (this != &rhs)
+{
+//problem with this algorithm is that if there is no more memory, it can not create new
+delete [] m_text;
+m_len = rhs.m_len;
+m_text = new char[m_len+1];
+strcpy(m_text, rhs.m_text);
+
+//new algorithm
+if (this !- &rhs)
+{
+String temp(rhs);
+swap(temp);
+}
+
+return *this;
+
+}
+
+void String::swap(String& other)
+{
+//swap the m_text members
+//swap m_len members;
+
+}
+
+//resource management in strings
+// String.h
+
+#ifndef STRING_INCLUDED
+#define STRING_INCLUDED
+
+class String
+{
+  public:
+    String(const char* value = "");
+    String(const String& other);
+    ~String();
+    String& operator=(const String& rhs);
+    void swap(String& other);
+    int size() const;
+  private:
+    char* m_text;
+    int m_size;
+};
+
+#endif // STRING_INCLUDED
+
+==========================================================
+
+// String.cpp
+
+#include "String.h"
+#include <cstring>
+using namespace std;
+
+String::String(const char* value)
+{
+    if (value == nullptr)
+        value = "";
+    m_size = strlen(value);
+    m_text = new char[m_size+1];
+    strcpy(m_text, value);
+}
+
+String::String(const String& other)
+ : m_size(other.m_size)
+{
+    m_text = new char[m_size+1];
+    strcpy(m_text, other.m_text);
+}
+
+String::~String()
+{
+    delete [] m_text;
+}
+
+String& String::operator=(const String& rhs)
+{
+    if (this != &rhs)
+    {
+        String temp(rhs);
+        swap(temp);
+    }
+    return *this;
+}
+
+void String::swap(String& other)
+{
+    ... // exchange the m_size and other.m_size ints
+    ... // exchange the m_text and other.m_text pointers
+}
+
+int String::size() const
+{
+    return m_size;
+}
+
+int main()
+{
+     String S;  // initialization, since there is a default argument it is good
+     String S2(S);  // initialization, copy constructor
+
+     S2 = S; // assignment, S2.operator=(s)
+
+     String S3 = S; //initialization
+{
+
+//aliasing
+
+void transfer(Account& from, Account& to, double amt)
+{
+     from.debit(amt)
+     to.credit(amt);
+     if (amt >=10000)
+         fileForm(...);
+
+{
+
+void fire(Shipp& from, Ship& to);  // always think about if the two arguments are both the same
+
+//what if we want to add an element to a dynamic array but there is no more space?
+//make a new dynamic array
+//copy the old arry into new array
+//move pointer to new array
+//delete old array
+//then add the new element into new array
+
+
+//linked list
+//a sequence of item linked to one another by explicitly pointing from the previous one to the next one
+|~| -> |26|  |64|  |42|  |18|  |37|
+       |  |->|  |->|  |->|  |->|nullptr| 
+
+Struct Node
+{
+    int m_data;
+    Node* m_next; // a node object can contain a pointer of its own type
+}
+
+Node* head; //  |~|
+
+//printing out linked list
+for (node* p = head; p!= nullptr; p = p-> m_next)
+cout << p->m_data << endl;
+
+//inserting a node into a linked list after p
+node* p;
+//point at where you want to start
+for (p = head;p!= nullptr && p-> m_data!=42, p = p->m_next)
+;
+
+if (p!=nullptr)
+{
+	node* newguy = new node;
+	newguy -> m_data = 55;
+	newguy -> m_next = p -> m_next;
+	p->m_next = newguy;
+}
+
+//deleting a node after p
+
+//point at where you want to start (here p is pointing at 42)
+for (p = head;p!= nullptr && p-> m_data!=42, p = p->m_next)
+;
+
+if (p!=nullptr)
+{
+	node* victim = p -> m_next;
+	p->m_next = victim->m_next;
+	delete victim;
+}
+
+//deleting a node before what p is pointing to
+
+for (p = head;p!= nullptr && p-> m_data!=42, p = p->m_next)
+;
+
+//this is bad because doesnt work if the first node is already 42
+if (p!=nullptr)
+{
+	node* before42;
+	for(before42 = head; before->m_next!= p; before42 = before42->m_next)
+	;
+}
+
+//new alogrithm
+node* curr;
+node* prev;
+// comma operator , ex A,B does A first then B
+for(curr=head;curr!=nullptr && curr->m_data != 42; prev = curr, curr = curr->m_next)
+;
+
+if(curr != nullptr)
+{
+	if (curr == head)//for the case if 42 is in the 1st node
+	head = curr->m_next;
+	else
+	prev ->m_next = cur->m_next;
+	delete curr;
+{
+
+//double linked list
+
+node* head = &firstnode
+node* tail = &lastnode
+
+struct node
+{
+int m_data;
+node* m_next;
+node* m_prev;
+}
+
+//stack
+
+//creating an empty stack
+//push an item into the stack
+//pop an item off the stack
+//all the pushes and pops are on one end only
+//is the stack empty
+=========
+//how many items are in the stack?
+//look at any item in the stack?
+
+#include <stack>
+using namespace std;
+
+int main()
+{
+stack<int> s;
+s.push(10);
+s.push(20);
+int n = s.top();
+s.pop(); // remove the first item on top 
+if (! s.empty())
+	cout << s.size();
+
+}
+
+//Queue:
+
+//creating an empty Queue
+//enqueue an item into the queue
+//dequeue an item off the queue
+//look at the front item in the queue
+//is the queue empty
+=========
+//how many items are in the queue?
+//look at the back item of the queue
+//look at any item in the queue
+
+#include <queue>
+using namespace std;
+
+int main()
+{
+queue<int> q;
+q.push(10);
+q.push(20);
+int n = q.front();
+q.pop(); // now q has only 20
+if (!q.empty())
+{
+cout << q.size();
+cout << q.back();
+}
+}
+
+dept = 'IT' and (salary > 60000 or age <30)
+prefix:
+f(x,y)
+g(h(w),f(z,x))
+add(sub(8,mul(2,3)),4)
+
+infix:
+a+b
+d-(5-x)
+8-2*3+4
+
+postfix
+8 2 3 * - 4 +
+
+Postfix also known as Reverse Polish Notation
+
+ex
+ 1 2 + 3 * 6 + 2 3 + /
+
+This means "take 1 and 2, add them, take 3 and multiply, take 6 and add, take 2 and 3, add them, and divide". In contrast, the equivalent expression in InfixNotation is
+  (((1 + 2) * 3) + 6) / (2 + 3)
+
+//infix to postfix
+
+=========================
+
+class circle
+{
+void move(double xnew, double ynew);
+void draw() const;
+double m_x;
+double m_y;
+double m_r;
+}
+
+class rectangle
+{
+void move(double xnew, double ynew);
+void draw() const;
+double m_x;
+double m_y;
+double m_r;
+double m_dx;
+double m_dy;
+}
+
+
+HW1
+=======================================
+// Set.h
+
+#ifndef SET_INCLUDED
+#define SET_INCLUDED
+
+  // Later in the course, we'll see that templates provide a much nicer
+  // way of enabling us to have Sets of different types.  For now,
+  // we'll use a typedef.
+
+typedef unsigned long ItemType;
+
+const int DEFAULT_MAX_ITEMS = 100;
+
+class Set
+{
+  public:
+    Set();               // Create an empty set.
+    bool empty() const;  // Return true if the set is empty, otherwise false.
+    int size() const;    // Return the number of items in the set.
+
+    bool insert(const ItemType& value);
+      // Insert value into the set if it is not already present.  Return
+      // true if the value was actually inserted.  Leave the set unchanged
+      // and return false if the value was not inserted (perhaps because it
+      // is already in the set or because the set has a fixed capacity and
+      // is full).
+
+    bool erase(const ItemType& value);
+      // Remove the value from the set if present.  Return true if the
+      // value was removed; otherwise, leave the set unchanged and
+      // return false.
+
+    bool contains(const ItemType& value) const;
+      // Return true if the value is in the set, otherwise false.
+     
+    bool get(int i, ItemType& value) const;
+      // If 0 <= i < size(), copy into value an item in the set and
+      // return true.  Otherwise, leave value unchanged and return false.
+
+    void swap(Set& other);
+      // Exchange the contents of this set with the other one.
+
+  private:
+    ItemType m_data[DEFAULT_MAX_ITEMS];  // the items in the set
+    int      m_size;                     // number of items in the set
+
+      // At any time, the elements of m_data indexed from 0 to m_size-1
+      // are in use.
+
+    int find(const ItemType& value) const;
+      // Return the position of value in the m_data array, or m_size if
+      // it is not in the array.
+};
+
+// Inline implementations
+
+inline
+int Set::size() const
+{
+    return m_size;
+}
+
+inline
+bool Set::empty() const
+{
+    return size() == 0;
+}
+
+inline
+bool Set::contains(const ItemType& value) const
+{
+    return find(value) != m_size;
+}
+
+#endif // SET_INCLUDED
+===================================================================
+// Set.cpp
+
+#include "Set.h"
+
+Set::Set()
+ : m_size(0)
+{}
+
+bool Set::insert(const ItemType& value)
+{
+    if (m_size == DEFAULT_MAX_ITEMS  ||  contains(value))
+        return false;
+    m_data[m_size] = value;
+    m_size++;
+    return true;
+}
+
+bool Set::erase(const ItemType& value)
+{
+    int pos = find(value);
+    if (pos == m_size)
+        return false;
+    m_size--;
+    m_data[pos] = m_data[m_size];
+    return true;
+}
+     
+bool Set::get(int i, ItemType& value) const
+{
+    if (i < 0  ||  i >= m_size)
+        return false;
+    value = m_data[i];
+    return true;
+}
+
+void Set::swap(Set& other)
+{
+      // Swap elements.  Since the only elements that matter are those up to
+      // m_size and other.m_size, only they have to be moved.
+
+    int minSize = (m_size < other.m_size ? m_size : other.m_size);
+    for (int k = 0; k < minSize; k++)
+    {
+        ItemType tempItem = m_data[k];
+        m_data[k] = other.m_data[k];
+        other.m_data[k] = tempItem;
+    }
+
+      // If the sizes are different, assign the remaining elements from the
+      // longer one to the shorter.
+
+    if (m_size > minSize)
+        for (int k = minSize; k < m_size; k++)
+            other.m_data[k] = m_data[k];
+    else if (other.m_size > minSize)
+        for (int k = minSize; k < other.m_size; k++)
+            m_data[k] = other.m_data[k];
+
+      // Swap sizes
+
+    int tempSize = m_size;
+    m_size = other.m_size;
+    other.m_size = tempSize;
+}
+
+int Set::find(const ItemType& value) const
+{
+    int pos = 0;
+    for ( ; pos < m_size  &&  m_data[pos] != value; pos++)
+        ;
+    return pos;
+}
+Problem 4:
+
+// SSNSet.h
+
+#ifndef SSNSET_INCLUDED
+#define SSNSET_INCLUDED
+
+#include "Set.h"  // ItemType is typedef'd to unsigned long
+
+class SSNSet
+{
+  public:
+    SSNSet();          // Create an empty SSNSet
+
+    bool add(unsigned long ssn);
+      // Add an SSN to the SSNSet.  Return true if and only if the SSN
+      // was actually added.
+
+    int size() const;  // Return the number of SSNs in the SSNSet.
+
+    void print() const;
+      // Write every SSN in the SSNSet to cout exactly once, one per
+      // line.  Write no other text.
+
+  private:
+    Set m_SSNs;
+};
+
+// Inline implementations
+
+  // Actually, we did not have to declare and implement the default
+  // constructor:  If we declare no constructors whatsoever, the compiler
+  // writes a default constructor for us that would do nothing more than
+  // default construct the m_SSNs data member.
+
+inline
+SSNSet::SSNSet()
+{}
+
+inline
+bool SSNSet::add(unsigned long ssn)
+{
+    return m_SSNs.insert(ssn);
+}
+
+inline
+int SSNSet::size() const
+{
+    return m_SSNs.size();
+}
+
+#endif // SSNSET_INCLUDED
+===================================================================
+// SSNSet.cpp
+
+#include "Set.h"
+#include "SSNSet.h"
+#include <iostream>
+using namespace std;
+
+void SSNSet::print() const
+{
+    for (int k = 0; k < m_SSNs.size(); k++)
+    {
+        unsigned long x;
+        m_SSNs.get(k, x);
+        cout << x << endl;
+    }
+}
+Problem 5:
+
+The few differences from the Problem 3 solution are indicated in boldface.
+
+// newSet.h
+
+#ifndef NEWSET_INCLUDED
+#define NEWSET_INCLUDED
+
+  // Later in the course, we'll see that templates provide a much nicer
+  // way of enabling us to have Sets of different types.  For now,
+  // we'll use a typedef.
+
+typedef unsigned long ItemType;
+
+const int DEFAULT_MAX_ITEMS = 100;
+
+class Set
+{
+  public:
+    Set(int capacity = DEFAULT_MAX_ITEMS);
+      // Create an empty set with the given capacity.
+
+    bool empty() const;  // Return true if the set is empty, otherwise false.
+    int size() const;    // Return the number of items in the set.
+
+    bool insert(const ItemType& value);
+      // Insert value into the set if it is not already present.  Return
+      // true if the value was actually inserted.  Return false if the
+      // value was not inserted (perhaps because it is already in the set
+      // or because the set has a fixed capacity and is full).
+
+    bool erase(const ItemType& value);
+      // Remove the value from the set if present.  Return true if the
+      // value was removed; otherwise, leave the set unchanged and
+      // return false.
+
+    bool contains(const ItemType& value) const;
+      // Return true if the value is in the set, otherwise false.
+     
+    bool get(int i, ItemType& value) const;
+      // If 0 <= i < size(), copy into value an item in the set and
+      // return true.  Otherwise, leave value unchanged and return false.
+
+    void swap(Set& other);
+      // Exchange the contents of this set with the other one.
+
+      // Housekeeping functions
+    ~Set();
+    Set(const Set& other);
+    Set& operator=(const Set& rhs);
+
+  private:
+    ItemType* m_data;        // dynamic array of the items in the set
+    int       m_size;        // the number of items in the set
+    int       m_capacity;    // the maximum number of items there could be
+
+      // At any time, the elements of m_data indexed from 0 to m_size-1
+      // are in use.
+
+    int find(const ItemType& value) const;
+      // Return the position of value in the m_data array, or m_size if
+      // it is not in the array.
+};
+
+// Inline implementations
+
+inline
+int Set::size() const
+{
+    return m_size;
+}
+
+inline
+bool Set::empty() const
+{
+    return size() == 0;
+}
+
+inline
+bool Set::contains(const ItemType& value) const
+{
+    return find(value) != m_size;
+}
+
+#endif // NEWSET_INCLUDED
+===================================================================
+// newSet.cpp
+
+#include "newSet.h"
+#include <iostream>
+#include <cstdlib>
+
+Set::Set(int capacity)
+ : m_size(0), m_capacity(capacity)
+{
+    if (capacity < 0)
+    {
+        std::cout << "A Set capacity must not be negative." << std::endl;
+        std::exit(1);
+    }
+    m_data = new ItemType[m_capacity];
+}
+
+bool Set::insert(const ItemType& value)
+{
+    if (m_size == m_capacity  ||  contains(value))
+        return false;
+    m_data[m_size] = value;
+    m_size++;
+    return true;
+}
+
+bool Set::erase(const ItemType& value)
+{
+    int pos = find(value);
+    if (pos == m_size)
+        return false;
+    m_size--;
+    m_data[pos] = m_data[m_size];
+    return true;
+}
+     
+bool Set::get(int i, ItemType& value) const
+{
+    if (i < 0  ||  i >= m_size)
+        return false;
+    value = m_data[i];
+    return true;
+}
+
+void Set::swap(Set& other)
+{
+      // Swap pointers to the elements.
+
+    ItemType* tempData = m_data;
+    m_data = other.m_data;
+    other.m_data = tempData;
+
+      // Swap sizes
+
+    int tempSize = m_size;
+    m_size = other.m_size;
+    other.m_size = tempSize;
+
+      // Swap capacities
+
+    int tempCapacity = m_capacity;
+    m_capacity = other.m_capacity;
+    other.m_capacity = tempCapacity;
+}
+
+Set::~Set()
+{
+    delete [] m_data;
+}
+
+Set::Set(const Set& other)
+ : m_size(other.m_size), m_capacity(other.m_capacity)
+{
+    m_data = new ItemType[m_capacity];
+
+      // Since the only elements that matter are those up to m_size, only
+      // they have to be copied.
+
+    for (int k = 0; k < m_size; k++)
+        m_data[k] = other.m_data[k];
+}
+
+Set& Set::operator=(const Set& rhs)
+{
+    if (this != &rhs)
+    {
+        Set temp(rhs);
+        swap(temp);
+    }
+    return *this;
+}
+
+int Set::find(const ItemType& value) const
+{
+    int pos = 0;
+    for ( ; pos < m_size  &&  m_data[pos] != value; pos++)
+        ;
+    return pos;
+}
+=====================================================================
+
+if a class is designed to be a base class, declaare its destructor virtual and implement it
+
+class shape
+{
+public:
+virtual ~shape() = 0;
+};
+
+shape::~shape()
+{}
+
+class polygon: public shape
+{
+public:
+~polygon();
+private:
+node* m_vertices;
+};
+
+polygon:~polygon()
+{
+delete all nodes
+}
+
+if a class is designed to be a base class, declare its destructor virtual and implement it
+
+construction:
+1) construct the base part,consulting the member initialization list
+2) construct the data members, consulting the member intialization list
+3) execute the body of the constructor
+
+destruction
+1) execute the body of the destructor
+2) destroy the data members
+3) destroy the base part
+
+sorting algorithm/ recursion methods
+=====================
+
+sort (an unsorted pile of N items)
+{
+	if (N > 1)
+	{
+	split the pile into two unsorted subpiles ofabout N/2 items each
+	sort (left subpile)
+	sort(right subpile)
+	merge the two subpiles into one sorted pile     
+	}            
+}
+
+base cases : (N <=1)
+paths through the functions that does not make any recursive calls
+
+recursive cases:
+show that if you assume the function works for problems coser to the base case, then the 
+function works
+
+ex.
+
+sort 4
+adcb
+
+sort 2
+ad
+
+sort1   sort1
+a           d
+
+merge2
+ad
+
+sort 2
+cb
+
+sort1	sort1 
+c        b
+
+merge2
+
+bc
+
+merge4
+abcd
+
+void sort (int a[], int b, int e)
+{
+	if (e-b > 1)
+	{
+	int mid = (b+e)/2;
+	sort(a,b,mid);
+	sort(a,mid,e);
+	merge the two sorted subpiles into one sorted pile
+	}
+}
+
+
+int main()
+{
+	int arr[5] = {50,20,30,10,40};
+	sort (arr, 0,5);	
+}
+
+//
+
+bool contains(int a[], int n, int target)
+{
+	if (n <=0)
+	return false;
+	if (a[0] == target)
+	return true;
+	contains(a+1,n-1,target);
+}
+
+abstract class
+======================
+definition for Figure::draw , even though it could be trivial.
+If you make the member function Figure::draw a pure virtual function , then
+you do not need to give any definition to that member function. The way to make a
+member function into a pure virtual function is to mark it as virtual and to add the
+anno tation = 0 to the member function declaration, as in the following 
+
+example: virtual void draw( ) = 0;
+
+virtual void printCheck( ) const = 0;
+
+
+Any kind of member can be made a pure virtual function. It need not be a void
+function with no parameters as in our example.
+A class with one or more pure virtual functions is called an abstract class . An
+abstract class can only be used as a base class to derive other classes. You cannot create
+objects of an abstract class, since it is not a complete class definition. An abstract class
+is a partial class definition because it can contain other member functions that are
+not pure virtual functions. An abstract class is also a type, so you can write code with
+parameters of the abstract class type and it will apply to all objects of classes that are
+descendants of the abstract class.
+If you derive a class from an abstract class, the derived class will itself be an abstract
+class unless you provide definitions for all the inherited pure virtual functions (and also
+do not introduce any new pure virtual functions). If you do provide definitions for all
+the inherited pure virtual functions (and also do not introduce any new pure virtual
+functions), the resulting class is not an abstract class, which means you can create
+objects of the class.
+
+member iniailization list
+=================================
+initialization section 
+
+DayOfYear::DayOfYear(int monthValue, int dayValue): month(monthValue), day(dayValue)
+{
+...
+}
+
+for inheritance
+
+employee is the base class
+
+HourlyEmployee::HourlyEmployee(const string&theName,
+const string& theNumber, double theWageRate,
+double theHours)
+: Employee(theName, theNumber),
+wageRate(theWageRate), hours(theHours)
+{
+//deliberately empty
+}
+
+
+default constructor
+
+HourlyEmployee::HourlyEmployee( ) : Employee( ), wageRate(0),
+hours(0)
+{
+//deliberately empty
+}
+
+virtual
+==========
+Since bill was declared virtual in the base class,
+it is automatically virtual in the derived class
+DiscountSale . You can add the modifier virtual
+to the declaration of bill or omit it as here; in either
+case bill is virtual in the class DiscountSale .
+(We prefer to include the word virtual in all virtual
+function declarations, even if it is not required. We
+omitted it here to illustrate that it is not required.)
+
+NOTE:You do not repeat the
+qualifier virtual in
+the function definition.
+
+virtual destructors
+======================
+
+If your derived class destructor is virtual then objects will be destrcuted in a order(firstly derived object then base ). If your derived class destructor is NOT virtual then only base class object will get deleted(because pointer is of base class "Base *myObj"). So there will be memory leak for derived object.
+
+To sum up, always make base classes' destructors virtual when they're meant to be manipulated polymorphically.
+
+You also NEED to implement the destructor:
+
+class A {
+public:
+    virtual ~A() = 0;
+};
+
+inline A::~A() { }
+should suffice.
+
+If you derive anything from A and then try to delete or destroy it, A's destructor will eventually be called. Since it is pure and doesn't have an implementation, undefined behavior will ensue. On one popular platform, that will invoke the purecall handler and crash.
+
+
+ex
+class base
+{
+
+public:
+    base(){cout<<"Base Constructor Called\n";}
+    virtual ~base(){cout<<"Base Destructor called\n";}
+
+};
+class derived1:public base
+{
+
+public:
+    derived1(){cout<<"Derived constructor called\n";}
+    ~derived1(){cout<<"Derived destructor called\n";}
+
+};
+int main()
+{
+
+    base* b;
+    b=new derived1;
+    delete b;
+
+}
+different ways of overloading a+
+=================================================
+
+
+Suppose you have a class like this:
+
+class Element {
+public:
+    Element(int value) : value(value) {}
+    int getValue() const { return value; }
+private:
+    int value;
+};
+There are four ways to define a binary operator such as +.
+
+(1) As a free function with access to only the public members of the class:
+
+// Left operand is 'a'; right is 'b'.
+Element operator+(const Element& a, const Element& b) {
+    return Element(a.getValue() + b.getValue());
+}
+e1 + e2 == operator+(e1, e2)
+(2) As a member function, with access to all members of the class:
+
+class Element {
+public:
+    // Left operand is 'this'; right is 'other'.
+    Element operator+(const Element& other) const {
+        return Element(value + other.value);
+    }
+    // ...
+};
+e1 + e2 == e1.operator+(e2)
+(3) As a friend function, with access to all members of the class:
+
+class Element {
+public:
+    // Left operand is 'a'; right is 'b'.
+    friend Element operator+(const Element& a, const Element& b) {
+        return a.value + b.value;
+    }
+    // ...
+};
+e1 + e2 == operator+(e1, e2)
+(4) As a friend function defined outside the class body—identical in behaviour to #3:
+
+class Element {
+public:
+    friend Element operator+(const Element&, const Element&);
+    // ...
+};
+
+Element operator+(const Element& a, const Element& b) {
+    return a.value + b.value;
+}
+e1 + e2 == operator+(e1, e2)
+===================================================
+bool contains(const int a[], int n, int target)
+{
+if (n <= 0)
+return false;
+if (a[0] == target
+return true;
+return contains(a+1,n-1,target);
+}
+
+Templates
+======================================
+
+overloading functions with different parameters
+
+
+what if you want the same functions but for different types?
+
+ex.
+template(typename T>
+
+T mininum(T a, T b)
+{
+if (a < b)
+return a;
+else
+return b;
+}
+
+How do we use this?
+
+ex.
+
+cout << mininum<int>(k,10)<<endl;
+//almost never done explicitly
+//so.....
+
+"template argument deduction"
+have complier deduce what type it is
+so the compiler changes T for you when function is called
+
+instantiated template must compile,
+so if the two arguments is the same type, and you pass in a int and a double, it won't work
+
+instantiated template must do the right thing
+ex.
+template<typename T, typename U>
+
+T mininum(T a, U b)
+{
+....
+}
+
+what if T was int and U was double, and we pass in 3.5, then it will return 3 instead, which is wrong 
+even though it compiles	
+
+T() calls the default constructor or a built in type like string() or double()
+
+T sum(const T a[], int n)
+{
+	T total = T();
+for (int k =0; k < n; k++)
+	total += a[k];
+	return total;
+}
+
+
+what if you pass two arrays of char into the mininum function,
+will convert T to pointer of char
+will not work right because you will be comparing pointers not what it is pointing to
+
+
+//must overload function
+
+char* mininum(char* a, char* b)
+{
+if (strcmp(a,b) < 0)
+return a;
+else
+return b;
+}
+//non template function will be called instead of the template one
+
+
+template class
+===================
+template<typename T>
+class Stack
+{
+public:
+stack();
+void push(Const T& x);
+void pop();
+T top() const;
+int size() const;
+
+private:
+
+T m_data[100];
+int m_top;
+};
+
+template<typename T>
+stack<T>::stack() : m_top(0)
+{}
+
+template<typename T>
+void stack<T>::push(const  T& x)
+{
+m_data[m_top] = x;
+m_top++;
+}
+
+template<typename T>
+void stack<T>::pop()
+{
+m_top--;
+}
+
+template<typename T>
+T stack<T>:: top() const
+{
+return m_data[m_top-1];
+}
+
+template<typename T>
+int stack<T>::size() const
+{
+return m_top;
+}
+
+
+// you must put template<typename T> before function implementation or class declaration
+
+
+iterators
+===============
+
+
+template<typename Iter>
+Iter findFirstNegative(Iter b, Iter e)
+{
+for ( ; b != e; b++)
+if (*b < 0)
+break;
+return b;
+}
+template<typename Iter>
+Iter findFirstEmpty(Iter b, Iter e)
+{
+for ( ; b != e; b++)
+if (b->empty())
+break;
+return b;
+} 
+
+pointers to functions
+==========================
+
+
+// fcnPtr is a pointer to a function that takes no arguments and returns an integer
+int (*fcnPtr)();
+
+Assigning a function to a function pointer
+------------------------------------------------
+int foo()
+{
+    return 5;
+}
+ 
+int goo()
+{
+    return 6;
+}
+ 
+int main()
+{
+    int (*fcnPtr)() = foo; // fcnPtr points to function foo
+    fcnPtr = goo; // fcnPtr now points to function goo
+ 
+    return 0;
+}
+
+// function prototypes
+int foo();
+double goo();
+int hoo(int x);
+ 
+// function pointer assignments
+int (*fcnPtr1)() = foo; // okay
+int (*fcnPtr2)() = goo; // wrong -- return types don't match!
+double (*fcnPtr4)() = goo; // okay
+fcnPtr1 = hoo; // wrong -- fcnPtr1 has no parameters, but hoo() does
+int (*fcnPtr3)(int) = hoo; // okay
+
+Calling a function using a function pointer
+---------------------------------------------
+
+The other primary thing you can do with a function pointer is use it to actually call the function. There are two ways to do this. The first is via explicit dereference:
+
+
+int foo(int x)
+{
+    return x;
+}
+ 
+int main()
+{
+    int (*fcnPtr)(int) = foo; // assign fcnPtr to function foo
+    (*fcnPtr)(5); // call function foo(5) through fcnPtr.
+ 
+    return 0;
+}
+The second way is via implicit dereference:
+
+int foo(int x)
+{
+    return x;
+}
+ 
+int main()
+{
+    int (*fcnPtr)(int) = foo; // assign fcnPtr to function foo
+    fcnPtr(5); // call function foo(5) through fcnPtr.
+ 
+    return 0;
+}
+As you can see, the implicit dereference method looks just like a normal function call -- which is what you’d expect, since normal function names are pointers to functions anyway! However, some older compilers do not support the implicit dereference method, but all modern compilers should.
+
+One interesting note: Default parameters won’t work with function pointers. Default arguments are resolved at compile-time (that is, if you don’t supply an argument for a defaulted parameter, the compiler substitutes one in for you when the code is compiled). However, function pointers are resolved at run-time. Consequently, default parameters can not be resolved when making a function call with a function pointer. You’ll explicitly have to pass in values for any defaulted parameters in this case.
+
+
+Passing functions as arguments to other functions
+
+bool (*comparisonFcn)(int, int);
+
+void selectionSort(int *array, int size, bool (*comparisonFcn)(int, int))
+{
+// Step through each element of the array
+    for (int startIndex = 0; startIndex < size; ++startIndex)
+    {
+        // smallestIndex is the index of the smallest element we've encountered so far.
+        int smallestIndex = startIndex;
+ 
+        // Look for smallest element remaining in the array (starting at startIndex+1)
+        for (int currentIndex = startIndex + 1; currentIndex < size; ++currentIndex)
+        {
+            // If the current element is smaller than our previously found smallest
+            if (comparisonFcn(array[smallestIndex], array[currentIndex])) // COMPARISON DONE HERE
+                // This is the new smallest number for this iteration
+                smallestIndex = currentIndex;
+        }
+ 
+        // Swap our start element with our smallest element
+        std::swap(array[startIndex], array[smallestIndex]);
+    }
+}	
+
+
+bool ascending(int x, int y)
+{
+    return x > y; // swap if the first element is greater than the second
+}
+
+int main()
+{
+int array[9] = { 3, 7, 9, 5, 6, 1, 8, 2, 4 };
+
+selectionSort(array, 9, ascending);		
+}
+
+note: log base 2
+assume T(N) = N*log(N)
+
+T(N) = 2*T(N/2) + N
+T(N) = 2*(N/2*log(N/2))+N
+=N*(log(N)-log(2)) + N
+=N*log(N) - N + N
+=N*log(N)
+
+merge sort is 
+O(NlogN)
+
+selection sort
+O(N^2)
+
+bubble sort
+worst: O(N^2)
+average O(N^2)
+best O(N)
+
+insertion sort
+worstcase 
+worst: O(N^2)
+average O(N^2)
+best O(N)
+
+
+quick sort
+
+Sort(N items)
+{
+if(N>2)
+{
+partition into 2 piles-"early" and "late"
+sort early
+sort late
+stack the early pile onto the late pile
+}
+}
+
+quick sort
+	average O(NlogN)
+	better constant of proportionality than merge sort
+
+trees
+=====================
+root node
+parent/child
+subtree
+path
+leaf nodes
+interior nodes
+-all nodes with child is a interior node
+depth of a node
+-root node is at depth zero
+height of a tree
+-so the first child is at depth one
+
+struct Node
+{
+string data;
+vector<Node*> children
+}
+
+Node* root;
+
+
+int count (const Node* t)
+{
+if ( t == nullptr)
+return 0;
+return countAuxilliary(t);
+}
+int countAuxilliary(const Node* t) // t must not be null
+{
+
+int total = 1;
+for (int k = 0; k!= t->children.size(); k++)
+	total += countAuxillary(t-> children[k]);
+retur total;
+}
+
+void printTreeAuxilliary(const Node* t, int depth)
+{
+if ( t != nullptr)
+{
+cout << string (2*depth,' ') << t->data << endl;
+for(int k = 0; k!= t->children[k].size(); k++)
+    printTree(t->children[k], depth+1);
+}
+}
+
+void printTree(const Node* t)
+{
+printTreeAuxilliary(t,0);
+}
+
+
+//if you want to not have an auxiliary function use default arguments
+void printTree(const Node* t, int depth = 0);
+
+printTree(root);
+
+binary search tree (BST) is either:
+empty or 
+a node with left BST and a right BSt such that the value at every node in the left BST is <= the value at this nodes, and the value at every node in the right BST >= the value at this node
+
+void printTree(const Node* t)
+{
+if (t! = nullptr)
+{
+printTree(t->left);
+cout << t->data << endl;
+print Tree(t->right);
+}
+}
+						TREE
+				+++++++++++++++++++++++++++++++++++++++++
+					            LISA
+			         BART                                    MARGE
+                                      HOMER	                  MAGGIE        PATTY
+                                                                                      SELMA
+
+output                                    
+
+BART
+HOMER
+LIS
+MAGGIE
+MARGE
+PATTY
+SELMA
+
+

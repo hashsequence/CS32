@@ -1,0 +1,200 @@
+4a
+
+void uniqueIntersect(const Multiset& m1, const Multiset& m2, Multiset& result) //O(n)
+{
+    Multiset res;
+    for (int k = 0; k != m1.uniqueSize(); k++) //O(n)
+    {
+	ItemType x;
+	m1.get(k, x); // O(n)
+        if (m2.contains(x))// O(n)
+	    res.insert(x); // O(c)
+    }
+    result.swap(res); O(c)
+}
+
+ans: time complexity is O(n^2) because there is a O(N) time complexity within the for loop
+
+4b
+
+void Multiset::uniqueIntersect(const Multiset& m1, const Multiset& m2)
+{
+    vector<ItemType> v;
+    v.reserve(m1.uniqueSize() + m2.uniqueSize()); //O(C)
+
+      // copy all items into v;
+    for (Node* p1 = m1.m_head->m_next; p1 != m1.m_head; p1 = p1->m_next) //O(N)
+        v.push_back(p1->m_data); 
+    for (Node* p2 = m2.m_head->m_next; p2 != m2.m_head; p2 = p2->m_next) //O(N)
+        v.push_back(p2->m_data);
+
+      // sort v using an O(N log N) algorithm
+    sort(v.begin(), v.end()); //O(NlogN)
+
+      // Items in the intersection will be those that appear twice in
+      // v, adjacent to each other.
+      // Copy one instance of those items from v into *this.
+    m_size = 0;
+    Node* p = m_head->next;
+    for (size_t k = 1; k < v.size(); k++) //O(N)
+    {
+        if (v[k] == v[k-1])
+	{
+	    Node* toUpdate;
+	    if (p != m_head)
+	    {
+		toUpdate = p;  // reuse existing node
+		p = p->m_next;
+	    }
+	    else
+	    {
+		  // Insert new node at tail of result
+		toUpdate = new Node;
+		toUpdate->m_next = m_head;
+		toUpdate->m_prev = m_head->m_prev;
+		toUpdate->m_prev->m_next = toUpdate;
+		toUpdate->m_next->m_prev = toUpdate;
+	    }
+	    toUpdate->m_value = v[k];
+	    toUpdate->m_count = 1;
+	    m_size++;
+	}
+    }
+
+      // delete excess result nodes
+    if (p != m_head)
+    {
+        m_head->m_prev = p->m_prev;
+        p->m_prev->m_next = m_head;
+        do
+        {
+	    Node* toBeDeleted = p;
+	    p = p->m_next;
+	    delete toBeDeleted;
+        } while (p != m_head); //O(N)
+    }
+
+    m_uniqueSize = m_size;
+
+      // v is destroyed when function returns
+}
+
+ans:  time complexity is O(NlogN),because of the sort function, which is better than 4a because it is faster as N increases
+
+5a
+
+//here is my code for getinversions for part a
+int getInversionsA(int* begin, int size)
+{
+	int inversions = 0;
+	for (int i = 0; i < size; i++)
+	{
+		for (int j = i; j < size; j++)
+		{
+			if (i < j && begin[i] > begin[j])
+			{
+				inversions++;
+			}
+		}
+	}
+	return inversions;
+}
+
+ans:
+the time complexity is O(N^2).
+
+psuedocode:
+for each item in the array, compare the value with everything afterwards that are
+inversions
+
+if (there is an inversion)
+increment counter
+
+return inversions
+
+5b
+
+//here is the actual c++ code to count the number of inversions in O(NlogN) using merge sort
+int merge(int data[], int n1, int n2)
+{
+	int i = 0, j = 0, k = 0;
+	int *temp = new int[n1 + n2];
+	int *sechalf = data + n1;
+	int invert = 0;
+
+	while (i < n1 || j < n2)
+	{
+		if (i == n1)
+			temp[k++] = sechalf[j++];
+		else if (j == n2)
+			temp[k++] = data[i++];
+		else if (data[i] < sechalf[j])
+			temp[k++] = data[i++];
+		else
+		{
+			temp[k++] = sechalf[j++];
+			invert += n1 - i;
+		}
+	}
+	for (i = 0; i<n1 + n2; i++)
+		data[i] = temp[i];
+	delete[] temp;
+	return invert;
+}
+
+int getInversionsB(int* begin, int size)
+{
+	if (size == 1)
+		return 0;
+	int mid = size/ 2;
+	int k = 0;
+	k += getInversionsB(begin, mid);
+	k += getInversionsB(begin + mid, size - mid);
+	k += merge(begin, mid, size - mid);
+
+	return k;
+}
+
+
+int getInversionsWithoutSort(int* begin, int size) // helper function that will not sort the array and only return the number of inversions
+{
+	int* temp = new int[size];
+	int result = 0;
+	for (int i = 0; i < size; i++)
+	{
+		temp[i] = begin[i];
+	}
+	result = getInversionsB(temp, size);
+	delete[] temp;
+	return result;
+}
+
+ans:
+
+basically we use a merge sort and every time we merge the left and right piles,
+if (we are adding from the right pile and the left piles still have items left)
+we add the number of items in the left pile to the the total inversions and return that value.
+
+example:
+
+21543
+
+21  543
+
+2 1  54 3
+2 1  5 4  3 
+
+12   45  3  //2 inversions from merging (1 and 2) and (3 and 4)
+
+12   345  // 2 inversions from merging (45) and (3)
+
+12345
+
+result = 4
+
+6)
+
+42234234
+
+If I know there are duplicate items i can run throught the array of doubles which is O(N), and i insert the nlog distinct items into a binary search tree O(log(logN)), and for each value I insert I can use a hashtable to map the number of duplicates with each distinct item, then i can do inorder traversal of the bst to get all the values and and use the hashtable to display each value appropriately amount of times in order.
+

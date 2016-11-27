@@ -1,0 +1,365 @@
+test cases
+========================
+Set s1;
+	// note 0 means false and 1 means true
+
+	// cases that test the empty set and default constructor
+	assert(s1.size() == 0);
+	assert(s1.empty() == 1);
+	assert(s1.contains("a") == 0);
+
+	//testing if it returns false if its not there
+	assert(s1.erase("a") == 0);
+
+	//cases to test the set with one element
+	assert(s1.insert("a") == 1);
+	assert(s1.size() == 1);
+	assert(s1.empty() == 0);
+	assert(s1.contains("a") == 1);
+	assert(s1.erase("a") == 1);
+	
+	//case to test inserting a duplicate, which should be false
+	assert(s1.insert("a") == 1);
+	assert(s1.insert("a") == 0);
+
+	//testing the size and empty functions to see if they return the right size
+	assert(s1.insert("b") == 1);
+	assert(s1.insert("c") == 1);
+	assert(s1.insert("d") == 1);
+	assert(s1.size() == 4);
+	assert(s1.empty() == 0);
+
+	//testing erase functions that erases the nodes out of order
+	assert(s1.erase("c") == 1);
+	assert(s1.erase("a") == 1);
+	assert(s1.erase("d") == 1);
+	assert(s1.erase("b") == 1);
+	assert(s1.erase("b") == 0);
+	assert(s1.size() == 0);
+	assert(s1.empty() == 1);
+
+	//testing contain function if it works correctly for nonempty sets
+	assert(s1.insert("z") == 1);
+	assert(s1.insert("w") == 1);
+	assert(s1.insert("x") == 1);
+	assert(s1.contains("z") == 1);
+	assert(s1.contains("a") == 0);
+	assert(s1.erase("z") == 1);
+	assert(s1.erase("x") == 1);
+	assert(s1.erase("w") == 1);
+
+	//testing contain for empty sets
+	assert(s1.contains("a") == 0);
+
+	//testing the get function for nonempty sets
+	assert(s1.insert("a") == 1);
+	assert(s1.insert("b") == 1);
+	assert(s1.insert("c") == 1);
+	assert(s1.insert("d") == 1);
+	assert(s1.insert("e") == 1);
+	assert(s1.insert("f") == 1);
+
+	ItemType value;
+	for (int k = 0; k < s1.size(); k++)
+	{
+		s1.get(k, value);
+		if (k == 0)
+			assert(value == "a");
+		if (k == 1)
+			assert(value == "b");
+		if (k == 2)
+			assert(value == "c");
+		if (k == 3)
+			assert(value == "d");
+		if (k == 4)
+			assert(value == "e");
+		if (k == 5)
+			assert(value == "f");
+
+	}
+
+	//testing get for nonexistent element
+
+	assert(s1.get(7, value) == 0);
+	assert(s1.get(-1, value) == 0);
+
+	assert(s1.erase("a") == 1);
+	assert(s1.erase("b") == 1);
+	assert(s1.erase("c") == 1);
+	assert(s1.erase("d") == 1);
+	assert(s1.erase("e") == 1);
+	assert(s1.erase("f") == 1);
+
+	//testing get for nonempty sets
+
+	assert(s1.get(7, value) == 0);
+	assert(s1.get(-1, value) == 0);
+	assert(s1.get(0, value) == 0);
+
+	//testing swap to see if it swaps two nonempty sets, one is bigger and the other is smaller
+	assert(s1.insert("a") == 1);
+	assert(s1.insert("b") == 1);
+	assert(s1.insert("c") == 1);
+	assert(s1.insert("d") == 1);
+	assert(s1.insert("e") == 1);
+	Set s2;
+	assert(s1.insert("z") == 1);
+	assert(s1.insert("w") == 1);
+	assert(s1.insert("x") == 1);
+
+	s1.swap(s2);
+	for (int k = 0; k < s1.size(); k++)
+	{
+		s1.get(k, value);
+		if (k == 0)
+			assert(value == "z");
+		if (k == 1)
+			assert(value == "w");
+		if (k == 2)
+			assert(value == "x");
+	}
+	for (int k = 0; k < s2.size(); k++)
+	{
+		s2.get(k, value);
+		if (k == 0)
+			assert(value == "a");
+		if (k == 1)
+			assert(value == "b");
+		if (k == 2)
+			assert(value == "c");
+		if (k == 3)
+			assert(value == "d");
+		if (k == 4)
+			assert(value == "e");
+	}
+
+
+	s2.swap(s1);
+	for (int k = 0; k < s2.size(); k++)
+	{
+		s2.get(k, value);
+		if (k == 0)
+			assert(value == "z");
+		if (k == 1)
+			assert(value == "w");
+		if (k == 2)
+			assert(value == "x");
+	}
+	for (int k = 0; k < s1.size(); k++)
+	{
+		s1.get(k, value);
+		if (k == 0)
+			assert(value == "a");
+		if (k == 1)
+			assert(value == "b");
+		if (k == 2)
+			assert(value == "c");
+		if (k == 3)
+			assert(value == "d");
+		if (k == 4)
+			assert(value == "e");
+	}
+
+	//swapping with itself;
+
+	s2.swap(s2);
+	for (int k = 0; k < s2.size(); k++)
+	{
+		s2.get(k, value);
+		if (k == 0)
+			assert(value == "a");
+		if (k == 1)
+			assert(value == "b");
+		if (k == 2)
+			assert(value == "c");
+		if (k == 3)
+			assert(value == "d");
+		if (k == 4)
+			assert(value == "e");
+	}
+
+	//swapping empty set and a nonempty set
+	Set s3;
+
+	s3.swap(s2);
+	for (int k = 0; k < s3.size(); k++)
+	{
+		s3.get(k, value);
+		if (k == 0)
+			assert(value == "a");
+		if (k == 1)
+			assert(value == "b");
+		if (k == 2)
+			assert(value == "c");
+		if (k == 3)
+			assert(value == "d");
+		if (k == 4)
+			assert(value == "e");
+	}
+	assert(s2.empty() == 1);
+
+	//testing unite function for two disjoint sets
+
+	Set s4;
+	Set s5;
+	Set s6;
+
+	assert(s4.insert("a") == 1);
+	assert(s4.insert("b") == 1);
+	assert(s4.insert("c") == 1);
+	assert(s5.insert("d") == 1);
+	assert(s5.insert("e") == 1);
+	assert(s5.insert("f") == 1);
+
+	unite(s4, s5, s6);
+
+	assert(s6.contains("a") == 1);
+	assert(s6.contains("d") == 1);
+	assert(s6.contains("b") == 1);
+	assert(s6.contains("f") == 1);
+	assert(s6.contains("c") == 1);
+	assert(s6.contains("e") == 1);
+
+	//testing unite on two nonempty set onto a nonempty set with duplicate values as the previous two sets
+
+	assert(s4.insert("x") == 1);
+	assert(s4.insert("y") == 1);
+
+	unite(s4, s5, s6);
+	assert(s6.contains("x") == 1);
+	assert(s6.contains("y") == 1);
+	assert(s6.contains("a") == 1);
+	assert(s6.contains("d") == 1);
+	assert(s6.contains("b") == 1);
+	assert(s6.contains("f") == 1);
+	assert(s6.contains("c") == 1);
+	assert(s6.contains("e") == 1);
+
+	//testing subtract if it work as intended
+
+	Set s7;
+	subtract(s4, s6, s7);
+
+	assert(s7.contains("a") == 0);
+	assert(s7.contains("c") == 0);
+	assert(s7.contains("b") == 0);
+	assert(s7.contains("x") == 0);
+	assert(s7.contains("y") == 0);
+	assert(s7.contains("d") == 0);
+	assert(s7.contains("e") == 0);
+	assert(s7.contains("f") == 0);
+
+	assert(s7.empty() == 1);
+
+	// subtracting a set from a set and putting the elements into a nonempty set 
+	Set s8;
+	assert(s8.insert("u"));
+	assert(s7.insert("r"));
+	assert(s7.insert("t"));
+	assert(s7.insert("a"));
+
+	subtract(s7, s4, s8);
+	assert(s8.contains("u") == 1);
+	assert(s8.contains("r") == 1);
+	assert(s8.contains("t") == 1);
+	assert(s8.contains("a") == 0);
+	assert(s8.contains("c") == 0);
+	assert(s8.contains("b") == 0);
+	assert(s8.contains("x") == 0);
+	assert(s8.contains("y") == 0);
+	assert(s8.contains("d") == 0);
+	assert(s8.contains("e") == 0);
+	assert(s8.contains("f") == 0);
+	
+
+
+	Set s9;
+	Set s10;
+
+	assert(s9.insert("a") == 1);
+	assert(s9.insert("b") == 1);
+	assert(s9.insert("c") == 1);
+	assert(s10.insert("d") == 1);
+	assert(s10.insert("e") == 1);
+	assert(s10.insert("f") == 1);
+
+
+//testing unite if you input all the same sets
+	unite(s9, s9, s9);
+
+	assert(s9.contains("a") == 1);
+	assert(s9.contains("c") == 1);
+	assert(s9.contains("b") == 1);
+
+//testing subtract if you input the same two sets for the first two arguments
+
+	subtract(s9, s9, s10);
+	assert(s10.contains("a") == 0);
+	assert(s10.contains("c") == 0);
+	assert(s10.contains("b") == 0);
+	assert(s10.contains("d") == 1);
+	assert(s10.contains("e") == 1);
+	assert(s10.contains("f") == 1);
+
+//testing subtract if you input all the same sets for all arguments, should leave the sets untouched
+	subtract(s9, s9, s9);
+
+	assert(s9.contains("a") == 1);
+	assert(s9.contains("c") == 1);
+	assert(s9.contains("b") == 1);
+
+	//testing copy constructor to see if its the right size and contain the right elements
+
+	Set s11(s9);
+	assert(s11.contains("a") == 1);
+	assert(s11.contains("c") == 1);
+	assert(s11.contains("b") == 1);
+	assert(s11.empty() == 0);
+	assert(s11.size() == 3);
+
+	//testing assignment operator to see if its the right size and contain the right elements
+
+	s10 = s11;
+	assert(s10.contains("a") == 1);
+	assert(s10.contains("c") == 1);
+	assert(s10.contains("b") == 1);
+	assert(s10.empty() == 0);
+	assert(s10.size() == 3);
+
+description 
+=================
+
+I used a double linked list with a head and a tail.
+The head will point at the first element and the tail will point at the last element
+The first element m_prev is pointing at a null ptr and the last element m_next is pointing at a nullptr
+When there is an empty set the head and tail is pointing at the nullptr. When there is one element the head and tail is pointing at the same element
+
+psuedocode
+===================
+
+Unite
+
+Basically my unite function 
+declares two values that retrieves the values from the two sets
+two int variables that is assigned to the size of the two sets we are working with, thus 
+when we are dealing with cases where you are uniting the two sets and puting it in one of the sets, it
+wont overcount because the size would change if we add something to one of the two sets when we are uniting them
+ie unite (s1,s2,s2). (attempt to account for aliasing)
+
+The if else statement sees if s2_length and s1_length is bigger
+next for loop retrieves the value and insert it into the result set
+any duplicates will not matter due to the properties of the insert function
+
+Subtract
+
+declares two ItemType values and two int values for the length of each sets
+the two int variables sets the for loop to a constant size, so that if the size of
+the two sets change during the iteration of the for loop due to insertion of new elements, it will not
+be looked at(this is my attempt to account for aliasing)
+
+an if else statements check which is a bigger set
+it sets the for loop to iterate to the length of the bigger set
+the for loops retrives the value for each k using the get function
+it checks if s2 contains the value, and if not it inserts the value of s1 into result
+
+

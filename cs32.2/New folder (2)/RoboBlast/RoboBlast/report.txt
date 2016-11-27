@@ -1,0 +1,309 @@
+DESCRIPTION OF EACH CLASS
+=================================================
+
+STUDENTWORLD
++++++++++++++++++++++++++++++++++++++++++++++++++
+
+init()
+the init function loads all the main levels and sublevels
+
+move()
+reduces the time limit
+checks if the level was finished 
+if not then calles doSomething for each object
+if player died 
+then return player died 
+otherwise return corresponding game status
+
+cleanup()
+free all memory in actor container 
+and player container
+
+getCurrentSubLevel()
+returns the current sublevel
+
+CheckAt()
+the checkat function checks the current sublevel for whatever is at a certain x,y coordinate and returns a stacks that holds the id's of whaterver is on the spot
+
+checkAtForPlayer()
+checks if there is a player on a certian spot
+
+cleanTheDead()
+looks through the actor container and delete all
+the dead objects
+
+scanAreaForBullies()
+checks if there are bully in a 3x3 area, and checks if there are any bullies in the area and returns true or false correspondingly
+
+getCurrentTimeLimit()
+returns current time limit
+
+fulfilledReqs()
+return true if player finished level
+
+retrieveAllGoodiesat()
+returns a stack of Actor pointers of Extralife
+Restorehealth, and Ammo goodies (so that the bully can take the contents and delete the one in the actor containers by setting it to dead)
+
+retrieveAllGruntsat()
+returns a stack of Actor pointers to Gangsters and bullies, a helper function for farplaneGun
+
+finishedLevel()
+sets the level to be finished
+
+setDisplaySet()
+sets the display on the top 
+
+setCurrentSubLevel()
+sets the currentsublevel
+
+FarplaneDamage()
+damages bullies and gangster in a 9x9 area
+
+ACTORS
++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+Actor
+---------------------------------------------
+Actor is my base class for all my objects and has a two pure virtual functions that it passes down
+the doSomething()) function and the Interactions() function, the interactions function is a function that
+dictates how each of the object will react when in contact with other Actors
+
+Goodies
+---------------------------------------------
+
+Goodies is a child class of Actor and a base class for FarplaneGun, Restorehealth, Extralife, and Ammo
+it is an abstract class, but it has an implementation of dosomething, but calls the interactions function depending on
+what type of goody it is 
+
+MortalObjects
+---------------------------------------------
+
+MortalObjects is a child class of Actor and a parent class of the the sentient class and water pool
+dictates how the hit points will work
+
+Sentient 
+------------------------------------------
+
+child class of MortalObjects and parent class of Gangster, robotboss, bullies, and player
+has a movement function that dictates how the robotboss and the gangsters will move
+and has a shootAtPlayer function that dictates how the gangsters, robotboss, and bullies will shoot 
+the sentient interactions function have the shoot function for all my sentient classes
+
+Statics
+------------------------------------------
+
+is a child class of Actor and a parent class for wall, fakewall, and exit
+it does nothing, but is a abstract class
+
+Wall
+----------------------------------------
+deos nothing
+
+FakeWall
+------------------------------------------
+does nothing
+
+Player
+-----------------------------------------
+
+the player is a derived class of sentient, and has functions that manages the ammo
+the movement function detects whether the user has press corresponding keys that either shoots,
+move, or decrement lives
+
+Gold
+-------------------------------------
+is a derived class of Actor( I did not make this a derived class of goodies because the bully does not use it)
+detects if a the player is on it and act accordingly through its Interaction with player
+
+Gangster
+-------------------------------------
+gangster is a derived class of my sentient class, and uses the movement method of the sentient class, 
+the doSomthing function implemented detects how many action it does per ticks and either shoots the player or moves or 
+turn around. Its Interactions function dictates how it reacts to other objects, with bullets it gets damaged, with the farplanegun it gets 
+killed
+has 10 hp
+
+Robotbosses
+-----------------------------------
+is the same as a horizontal gangster and has 50 hp instead of 10
+
+Bully
+-----------------------------------------
+derived class of sentient
+
+the bully operates and rest on certain ticks
+
+when it acts it checks if there is a goody through foundgoodies()
+when it dies it calls dropGoodies and resinserts the goodies into the actor containter
+the distancebeforeturning dictates when the bully changes direction after a certain amount amount of steps
+the directionrandomize chooses a random number from 1 to 4 corresponding to the four directions.
+the movement function moves the bully and calls movementobstructed when bully is obstructed
+movementobstructed() is called when obstructed or when it has already walked in a certain direction in 6 steps
+then calls the distancerandomize to reset the the walkcounter
+the bully's Interaction function checks if there are goodies around to be picked up, and gets killed if within the farplaneDamage vicinity
+
+Bullet
+----------------------------------------
+
+checks the objects in its current location and checks if there is a sentient object, and damages the sentient
+by calling its interactions function 
+gets destroyed if encounters a wall, waterpool
+otherwise moves the bullet in its directions 
+and checks the objects in its current location again
+I chose this class to not be part of sentient even though it moves because it does not have hit points
+and its movement algorithm is different and much more simpler
+
+Extralife, RestoreHealth, Ammo
+----------------------------------------
+
+these are child classes of goodies, and its interaction specify what it does specifically if there 
+is a player or bully on it
+
+Hostage
+---------------------------------------
+the hostage is a child class of a goody but does not interact with the bully and only the player
+
+FarplaneGun
+----------------------------------
+FarplaneGun is a a child class of the goodies, and calles the studentworld function FarplaneDamage and damages all bullies and gangsters in a 9x9 radius and 
+hacks off 10 hit points from the player
+
+Gate
+----------------------------------
+
+the gate class is a derived class of Actor,
+my implementation of how the player moves between level is to have a player container to move the player between each level accordingly
+so in its doSomething implementation I have it call the studentWorld function setCurrentSubLevel, which sets the current sub level to the sub level indicated by the gate number
+
+Exit
+--------------------------------------
+Exit is a derived class of statics
+the Exit doSomething checks if the player has fulfilled all the requirements for the Exit to appear and when it does appear, it checks
+if the player is on it and tells the studentworld that the level is finished
+
+Waterpool
+-----------------------------------
+the waterpool is a mortalobject because it has 30 hit points and dies after 30 ticks
+the dosomething decrements its hitpoints every turn until it hits zero and dies
+
+Bullynest
+----------------------------------
+
+the bully nest is a derived class of Actor
+its dosomething calls the studentworld function scanareaforbullies to check if there are 3 or less bullies in the 3x3 surrounding area, if that
+is true it calls the chancetocreatebully function which has a 1/50 chance of return true, and if it is true, it creates a new bully at the coordinate
+of the bullynest
+
+2)
+
+i FINISHED all the classes i was required to do, and there are currently no known bugs i was unable to finished
+
+3)
+
+For my gate implementation , I ASKED THE PROFESSOR AND THE TA'S IF I COULD HAVE A SEPARATE CONTAINER FOR PLAYERS AND THEY SAID YES, so i had a containers
+of players in each sublevel so i can teleport the player between each sublevel correspondingly, also the spec did not specify whenther the fakewall animation should be atop the bullies, gangsters, players, or robotbosses' animation so, i did not concern myself with that
+
+4) 
+
+TESTING
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++==
+
+Actor
+---------------------------------------------
+i tested whether it was an abstract class or not by using new
+
+Goodies
+---------------------------------------------
+i tested whether it was an abstract class or not by using new
+
+MortalObjects
+---------------------------------------------
+i tested whether it was an abstract class or not by using new
+
+
+Sentient 
+------------------------------------------
+i tested whether it was an abstract class or not by using new
+
+
+Statics
+------------------------------------------
+i tested whether it was an abstract class or not by using new
+
+
+Wall
+----------------------------------------
+the wall does nothing, therefore i did not test it, the other classes dictates how it should react to a wall
+
+FakeWall
+------------------------------------------
+the fakewall does nothing, therefore i did not test it, the other classes dictates how it should react to a fakewall
+
+Player
+-----------------------------------------
+I tested how the movement corresponded with user input and whether the shoot function works as intended,
+I also tested whether it could walk through walls or other obstructed objects which obstructs player movements
+I tested whether the hitpoints decrement accordingly to damage.
+
+Gold
+-------------------------------------
+I tested if it gives the right amount of points and goes away when picked up
+
+Gangster
+-------------------------------------
+I check if its movement algorithm does as intended and whether the shootAtPlayer algorith shoots the player only if there is no obstruction
+and if the player is behing at least one fake wall
+I check if acts on certain amount of ticks passed
+
+Bully
+-----------------------------------------
+
+I check if its movement algorithm works as intended by comparing it with the example roboblast game for fifteen minutes and it was similar
+I check if its shootatPlayer works, and i checked if acts only certain amount of ticks
+i tested its picking up goodies algorithm to check if only picks up the correct goodies and resinsert the goodies into the container when it dies
+into the actor container
+
+Bullet
+----------------------------------------
+The bullet was checked intensively
+I checked if it sees a sentient in its location and damages accordingly to the sentient
+I checked if it could pass through certain objects or gets destroyed when it hits certain objects
+I check if the bullet moves in the right direction
+
+
+Extralife, RestoreHealth, Ammo
+----------------------------------------
+I tested if it gives the right amount of points and goes away when picked up
+I tested if it works accordingly with the bully when it is picked up
+
+Hostage
+---------------------------------------
+I tested if it gives the right amount of points and goes away when picked up
+
+FarplaneGun
+----------------------------------
+I tested if it damages bullies and gangster in a 9x9 radius and decrements the players hit points by 10
+
+Gate
+----------------------------------
+I checked if the gate teleport the player to the correct position in the sublevel and when it teleports back to the main level
+it teleports the player back to its previous location in the main level
+
+
+Exit
+--------------------------------------
+checks if it works and return the finished game level indication
+
+Waterpool
+-----------------------------------
+checks if it lives for only 30 ticks and interacts with other objects as an obstruction appropriately
+
+Bullynest
+----------------------------------
+Checks if it spawns bully at a reasonable rate and checks whether it spawns bullies only when there are 3 or less bullies in
+a 3x3 area from the bully nest
+
+

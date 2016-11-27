@@ -1,0 +1,127 @@
+2) the there is san error at sb.insert(Bottle("7-up")); because there is 
+no == operator to check if the bottle("7-up") is in the set already, so when it tries 
+to insert the object it fails.
+
+3)b
+
+the two parameter function lets it pass the string recursively, specifically it needs to keep track of all the directories that are open, thus everytime it sees a new directory it will add the directory name to the previous one in path, and iterates a for loop recursively, and when it reaches a regualar plainfile it will display the plainfile with the directory files that were added to path recursively
+
+4a)
+
+const int N = some value;
+	assert(N > 2);  // algorithm fails if N <= 2
+	double dist[N][N];
+	...
+	int bestMidPoint[N][N];
+	for (int i = 0; i < N; i++)  // one for loop of O(N)
+	{
+	    bestMidPoint[i][i] = -1;  // one-stop trip to self is silly
+	    for (int j = 0; j < N; j++) // one for loop of O(N)
+	    {
+	        if (i == j)
+	            continue;
+	        int minDist = maximum possible integer;
+	        for (int k = 0; k < N; k++) // one for loop of O(N)
+	        {
+	            if (k == i  ||  k == j)
+	                continue;
+	            int d = dist[i][k] + dist[k][j];
+	            if (d < minDist)
+	            {
+	                minDist = d;
+	                bestMidPoint[i][j] = k;
+	            }
+	        }
+	    }
+	}
+
+There are 3 nest for loops so it is of O(N^3)
+
+4b)
+const int N = some value;
+	assert(N > 2);  // algorithm fails if N <= 2
+	double dist[N][N];
+	...
+	int bestMidPoint[N][N];
+	for (int i = 0; i < N; i++) //one for loop of O(N)
+	{
+	    bestMidPoint[i][i] = -1;  // one-stop trip to self is silly
+	    for (int j = 0; j < i; j++)  // loop limit is now i, not N
+	    {
+	        int minDist = maximum possible integer;
+	        for (int k = 0; k < N; k++) //one for loop of O(N)
+	        {
+	            if (k == i  ||  k == j)
+	                continue;
+	            int d = dist[i][k] + dist[k][j];
+	            if (d < minDist)
+	            {
+	                minDist = d;
+	                bestMidPoint[i][j] = k;
+	                bestMidPoint[j][i] = k;
+	            }
+	        }
+	    }
+	}
+
+basically it still iterates through 3 for loops, the difference is that second for loop goes from i =1, 2, 3, ..., N. So the highest order of the second for loop is N and basically the order of the whole method is O(N^3) but is faster than a)
+
+5a)
+//set1, set2, and the old value of result each have N elements
+void unite(const Set& set1, const Set& set2, Set& result)
+{
+    const Set* sp = &set2;
+    if (&result == &set1)
+    {
+        if (&result == &set2)
+                return;
+    }
+    else if (&result == &set2)
+        sp = &set1;
+    else
+    {
+        result = set1;
+        if (&set1 == &set2)
+            return;
+    }
+    for (int k = 0; k < sp->size(); k++) // order N	
+    {
+        ItemType v;
+        sp->get(k, v); // for loop of order N
+        result.insert(v); // calls contains function ---> calls find function ---> worst is order N
+    }
+}
+
+The order is O(N^2) because the unite function calls a for loop that goes through the size of Set 2,
+inside the for loop it calls two functions, the get function iterates a for loop that goes through the linked list with worst order of N, and calls the insert function which calls the contains function, which calls the find function which has a for loop that goes through the list of order N, so the worst order is of order O(N^2)
+
+5b)
+//Assume that set1, set2, and the old value of *this each have N elements.
+void Set::unite(const Set& set1, const Set& set2)
+{
+    vector<ItemType> v;
+
+      // copy all items into v;
+    for (Node* p1 = set1.m_head->m_next; p1 != set1.m_head; p1 = p1->m_next) //order N
+        v.push_back(p1->m_data);
+    for (Node* p2 = set2.m_head->m_next; p2 != set2.m_head; p2 = p2->m_next) //order N
+        v.push_back(p2->m_data);
+
+      // sort v using an O(N log N) algorithm
+    sort(v.begin(), v.end());
+
+      // delete result nodes (other than the dummy node)
+    while (m_head->next != m_head) // order N
+        doErase(m_head->m_next);
+
+      // copy unique items from v into result
+    for (size_t k = 0; k < v.size(); k++) // order of 2N
+    {
+        if (k == 0  ||  v[k] != v[k-1])  // add non-duplicates
+	    insertAtTail(v[k]);
+    }
+
+      // v is destroyed when function returns
+}
+
+The functions goes through two for loops in the beggining that adds all the elements of set 1 and set 2 into the vector each with order N, then it calls a sort algorithm with order N Log N nd then goes through another for loop with order 2N so, O(2N) + O(n) + O(n log(n)) = O(n log(n)) 

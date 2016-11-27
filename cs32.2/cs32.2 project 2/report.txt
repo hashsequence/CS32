@@ -1,0 +1,1057 @@
+PSUEDOCODE FOR NONTRIVIAL FUNCTIONS
+============================================
+
+insert
+++++++++++++++++
+if already in list increment count
+if not
+create new temp node
+set temp values to value and count to 1
+assign the temps prev and next to corresponding items
+set the items between the temp next and prev pointing to temp
+
+erase
++++++++++++++++++++++
+if already in list decrement count
+if not
+search list
+have a pointer pointing to object
+rearrange the pointers of the next and prevs
+delete item
+
+eraseAll
++++++++++++++++++++++++++
+search list
+have a pointer pointing to object
+rearrange the pointers of the next and prevs
+delete item
+
+getLeastFrequentValue
+++++++++++++++++++++++++++++++
+/algorithm works as following
+// find the least frequent value
+//then check again to see if another value has same count
+//if not return true
+
+getSecondSmallestValue
++++++++++++++++++++++++++++++
+
+search for smallest item
+then search again but smallest item that is not the smallest item from the first search
+thus you will get the second smallest item
+
+replace
++++++++++++++++++++++++++++
+//algorithm works as following
+//if the value does not contain the original, is empty return false
+//if the set contains the new value
+//search for original, replace the original with new and increment its count to correct size
+//then eraseAll the new value that was originally in the list
+//if the set does not contain new value
+//replace the orginal value with the new value's value
+
+copyIntoOtherMultiset
+++++++++++++++++++++++++++++++
+//algorithm works byt the following
+//traverse linked list of this set and get the value and count and insert into other set with corresponding //count
+
+combine
++++++++++++++++++++++
+//algorithm
+	//create two new multiset using copy construction of ms1 and ms2
+	//copy ts2 into ts1, then copy assign ts1 into result;
+
+subtract
+++++++++++++++++++++++++++
+//algorithm works by using two loops to search through ms1 and ms2
+	//retrieve the values and counts using get
+	//take the differene of the two counts
+	//if n1 - n2 >0 then put into temp_result
+	//if not disregard it
+	//if the value is in ms1 but not in ms2 insert value into temp_result
+	//copy assign temp to result
+
+DESCRIPTION OF LINKED LIST IMPLEMENTATION
+===================================================
+
+I use a circular doubly linked list with a dummy node
+when the constructor is created it creates a dynamically new node which is the dummy pointed by m_head
+
+TEST CASES
+===========================================================================
+NOTE:
+I copy and past my test functions but the test cases are commented
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+void test_copyconstructor()
+{
+	cout << endl << "--------copy constructor test----------" << endl;
+	//test if it works
+
+	Multiset ms1;
+
+	ms1.insert(50);
+	ms1.insert(50);
+	ms1.insert(150);
+	ms1.insert(150);
+	ms1.insert(150);
+	ms1.insert(1);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40); 
+	ms1.insert(40);
+	ms1.insert(40);
+	Multiset ms2(ms1);
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+
+	cout << "--------ms2---------" << endl;
+	for (int i = 0; i < ms2.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms2.get(i, value);
+		cout << value << " count#: " << ms2.count(value) << endl;
+	}
+	cout << "ms2 unique size: " << ms2.uniqueSize() << endl;
+	cout << "ms2 size: " << ms2.size() << endl << endl;
+}
+
+void test_assignmentoperator()
+{
+	cout << endl << "--------assignment operator test----------" << endl;
+	//test if it works
+
+	Multiset ms1;
+
+	ms1.insert(50);
+	ms1.insert(50);
+	ms1.insert(150);
+	ms1.insert(150);
+	ms1.insert(150);
+	ms1.insert(1);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+
+	Multiset ms2;
+
+	cout << "--------ms2---------" << endl;
+	for (int i = 0; i < ms2.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms2.get(i, value);
+		cout << value << " count#: " << ms2.count(value) << endl;
+	}
+	cout << "ms2 unique size: " << ms2.uniqueSize() << endl;
+	cout << "ms2 size: " << ms2.size() << endl << endl;
+
+	cout << "now assigning ms2 = ms1" << endl;
+	ms2 = ms1;
+
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+
+	cout << "--------ms2---------" << endl;
+	for (int i = 0; i < ms2.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms2.get(i, value);
+		cout << value << " count#: " << ms2.count(value) << endl;
+	}
+	cout << "ms2 unique size: " << ms2.uniqueSize() << endl;
+	cout << "ms2 size: " << ms2.size() << endl << endl
+
+}
+void test_insert()
+{
+	cout << endl << "------insert test-------" << endl;
+	Multiset ms1;
+
+	cout << ms1.insert(1) << endl;
+	cout << ms1.insert(1) << endl;
+	cout << ms1.insert(1) << endl;
+	cout << ms1.insert(1) << endl;
+	cout << ms1.insert(1) << endl;
+	cout << ms1.insert(1) << endl;
+	cout << ms1.insert(1) << endl;
+	cout << ms1.insert(1) << endl;
+	cout << ms1.insert(1) << endl;
+	cout << ms1.insert(1) << endl;
+	cout << ms1.insert(2) << endl;
+
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+	ms1.eraseAll(1);
+	ms1.eraseAll(2);
+	//test if function works if everything is erased an insert a value again
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+
+	ms1.insert(3);
+
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+}
+
+void test_erase()
+{
+	cout << endl << "------erase test-------" << endl;
+	Multiset ms1;
+	// erasing something in an empty list should return false
+	assert(ms1.erase(0) == false);
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	ms1.insert(50);
+	ms1.insert(50);
+	ms1.insert(150);
+	ms1.insert(150);
+	ms1.insert(150);
+	ms1.insert(1);
+	ms1.insert(1);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(60); 
+	ms1.insert(60);
+	ms1.insert(60);
+
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+	//erase the front
+	cout << "erase the front" << endl;
+	ItemType V;
+	assert(ms1.erase(50) == 1);
+	assert(ms1.erase(50) == 1);
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+	assert(ms1.get(0,V) == 3);
+	assert(V == 150);
+
+	//erase the last
+
+	assert(ms1.erase(60) == 1);
+	assert(ms1.erase(60) == 1);
+	assert(ms1.erase(60) == 1);
+	assert(ms1.get(2, V) == 5);
+	assert(V == 40);
+	cout << "erased first and last items completely" << endl;
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+	cout << "erase middle item once" << endl;
+	assert(ms1.erase(1) == 1);
+	assert(ms1.get(1, V) == 1);
+	assert(V == 1);
+
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+
+	cout << "erase middle item again" << endl;
+	assert(ms1.erase(1) == 1);
+	assert(ms1.get(1, V) == 5);
+	assert(V == 40);
+
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+}
+
+void test_eraseall()
+{
+	cout << "---------erase all test-----------" << endl;
+	Multiset ms1;
+	assert(ms1.empty() == true);
+	ItemType value;
+	ms1.insert(50);
+	ms1.insert(50);
+	ms1.insert(150);
+	ms1.insert(150);
+	ms1.insert(150);
+	ms1.insert(1);
+	ms1.insert(1);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(60);
+	ms1.insert(60);
+	ms1.insert(60);
+
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+	cout << "ms1: smallest value is " << ms1.getSmallestValue(value);
+	cout << " and value is " << value << endl;
+	cout << "ms1: second smallest value is " << ms1.getSecondSmallestValue(value);
+	cout << " and value is " << value << endl;
+	cout << "ms1: leastfrequentvalue is " << ms1.getLeastFrequentValue(value);
+	cout << " and value is " << value << endl;
+	cout << "amount greater than 150 in ms1: " << ms1.countIf('>', 150) << endl;
+	cout << "amount less than 150 in ms1: " << ms1.countIf('<', 150) << endl;
+	cout << "amount equal 150 in ms1: " << ms1.countIf('=', 150) << endl;
+
+	//erase first middle and last items
+	cout << "erase first, middle, and last items" << endl;
+	assert(ms1.contains(50) == true);
+	assert(ms1.contains(1) == true);
+	assert(ms1.contains(60) == true);
+	assert(ms1.eraseAll(50) == 2);
+	assert(ms1.eraseAll(50) == 0);
+	assert(ms1.eraseAll(1) == 2);
+	assert(ms1.eraseAll(60) == 3);
+	assert(ms1.contains(50) == false);
+	assert(ms1.contains(1) == false);
+	assert(ms1.contains(60) == false);
+
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+	//erase everything else and check if empty
+	cout << "erase everything else and check if empty" << endl;
+	ms1.eraseAll(150);
+	ms1.eraseAll(40);
+	assert(ms1.empty() == true);
+	//insert something to check if set had properly erased items
+	cout << "put stuff back in" << endl;
+	ms1.insert(5000);
+	ms1.insert(5000); 
+	ms1.insert(5000);
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+}
+
+void test_count()
+{
+	cout << "-------count test--------" << endl;
+	Multiset ms1;
+	//test if returns false if multiset is empty
+	assert(ms1.count(50) == 0);
+	ms1.insert(50);
+	ms1.insert(50);
+	ms1.insert(150);
+	ms1.insert(150);
+	ms1.insert(150);
+	ms1.insert(1);
+	ms1.insert(1);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(60);
+	ms1.insert(60);
+	ms1.insert(60);
+	assert(ms1.count(50) == 2);
+	//test if function return the correct value in set
+	//test if function returns the correct value after erased once
+	ms1.erase(50);
+	assert(ms1.count(50) == 1);
+	//test if function returns 0 after value is erased completely
+	ms1.eraseAll(50);
+	assert(ms1.count(50) == 0);
+	cout << "count test finished ----------------" << endl;
+}
+
+void test_get()
+{
+	cout << "--------------test get---------" << endl;
+	Multiset ms1;
+	ItemType value = 56; 
+	//test if get works on empty set
+	assert(ms1.get(0, value) == false);
+	assert(value == 56);
+	ms1.insert(50);
+	ms1.insert(50);
+	ms1.insert(150);
+	ms1.insert(150);
+	ms1.insert(150);
+	ms1.insert(1);
+	ms1.insert(1);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(60);
+	ms1.insert(60);
+	ms1.insert(60);
+	cout << "get test finished----------------" << endl;
+}
+
+void test_getleastfrequentvalue()
+{
+	cout << "---------------getleastfrequentvalue test----------" << endl;
+	Multiset ms1;
+	ItemType value = 56;
+	//test if funtion returns false for empty set
+	assert(ms1.getLeastFrequentValue(value) == false);
+	assert(value == 56);
+	ms1.insert(50);
+	ms1.insert(50);
+	ms1.insert(150);
+	ms1.insert(150);
+	ms1.insert(150);
+	ms1.insert(1);
+	ms1.insert(1);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(60);
+	ms1.insert(60);
+	ms1.insert(60);
+	//returns false if more than one least frequent
+	assert(ms1.getLeastFrequentValue(value) == false);
+	ms1.erase(1);
+	//test if returns the right value
+	assert(ms1.getLeastFrequentValue(value) == true);
+	assert(value == 1);
+
+
+	cout << endl << "--------ms1---------" << endl;;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+
+
+	cout << "getleastfrequentvalue test finished ----------------" << endl;
+}
+
+void test_getSmallestValue()
+{
+	cout << "-------------getsmallestvalue test------------" << endl;
+	Multiset ms1;
+	ItemType value = 56;
+	//works on empty set
+	assert(ms1.getSmallestValue(value) == false);
+	assert(value == 56);
+
+	ms1.insert(1);
+	ms1.insert(1);
+
+	// work on set with one item
+
+	assert(ms1.getSmallestValue(value) == true);
+	assert(value == 1);
+
+	ms1.insert(0);
+
+	assert(ms1.getSmallestValue(value) == true);
+	assert(value == 0);
+
+
+
+	cout << "getsmallestvalue test finished--------------" << endl;
+}
+
+void test_getSecondSmallestValue()
+{
+	cout << "-------------getSecondsmallestvalue test------------" << endl;
+	Multiset ms1;
+	ItemType value = 56;
+	//works on empty set, should return false
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+	cout << "ms1: smallest value is " << ms1.getSmallestValue(value);
+	cout << " and value is " << value << endl;
+	cout << "ms1: second smallest value is " << ms1.getSecondSmallestValue(value);
+	cout << " and value is " << value << endl;
+	assert(ms1.getSecondSmallestValue(value) == false);
+	assert(value == 56);
+
+	ms1.insert(1);
+	ms1.insert(1);
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+	cout << "ms1: smallest value is " << ms1.getSmallestValue(value);
+	cout << " and value is " << value << endl;
+	cout << "ms1: second smallest value is " << ms1.getSecondSmallestValue(value);
+	cout << " and value is " << value << endl;
+//returns false if only one item
+	assert(ms1.getSecondSmallestValue(value) == false);
+
+	ms1.insert(2);
+	assert(ms1.getSecondSmallestValue(value) == true);
+	assert(value == 2);
+	ms1.insert(50);
+	ms1.insert(50);
+	ms1.insert(150);
+	ms1.insert(150);
+	ms1.insert(150);
+	ms1.insert(1);
+	ms1.insert(1);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(60);
+	ms1.insert(60);
+	ms1.insert(60);
+	//returns the right value
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+	cout << "ms1: smallest value is " << ms1.getSmallestValue(value);
+	cout << " and value is " << value << endl;
+	cout << "ms1: second smallest value is " << ms1.getSecondSmallestValue(value);
+	cout << " and value is " << value << endl;
+
+	Multiset ms2;
+	ms2.insert(2);
+	ms2.insert(1); 
+	ms2.insert(3);
+	cout << "--------ms2---------" << endl;
+	for (int i = 0; i < ms2.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms2.get(i, value);
+		cout << value << " count#: " << ms2.count(value) << endl;
+	}
+	cout << "ms2 unique size: " << ms2.uniqueSize() << endl;
+	cout << "ms2 size: " << ms2.size() << endl << endl;
+	cout << "ms2: smallest value is " << ms2.getSmallestValue(value);
+	cout << " and value is " << value << endl;
+	cout << "ms2: second smallest value is " << ms2.getSecondSmallestValue(value);
+	cout << " and value is " << value << endl;
+	cout << "getSecondsmallestvalue test finished--------------" << endl;
+
+}
+
+void test_replace()
+{
+	Multiset ms1;
+	cout << "--------replace test------------" << endl;
+	assert(ms1.replace(50, 60) == false);
+	ms1.insert(50);
+	ms1.insert(50);
+	ms1.insert(150);
+	ms1.insert(150);
+	ms1.insert(150);
+	ms1.insert(1);
+	ms1.insert(1);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(40);
+	ms1.insert(60);
+	ms1.insert(60);
+	ms1.insert(60);
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+	//test replace original value with a new value that does not already exist in the set
+	//test replace original value with new value that already exist in set
+	ms1.replace(40, 41);
+	ms1.replace(60, 50);
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+	cout << "replace test finished--------------------" << endl;
+}
+
+void test_countif()
+{
+	cout << "------------countif test---------------" << endl;
+	Multiset ms1;
+	ItemType value = 3;
+	ms1.insert(1);
+	ms1.insert(2);
+	ms1.insert(1);
+	ms1.insert(2);
+	ms1.insert(3);
+	ms1.insert(3);
+	ms1.insert(4);
+	ms1.insert(4);	
+	ms1.insert(4);
+	//test if function works for >, < , and =
+	assert(ms1.countIf('<', value) == 4);
+	assert(ms1.countIf('>', value) == 3);
+	assert(ms1.countIf('=', value) == 2);
+	//test if function works for value that is not in set
+	assert(ms1.countIf('<', 5) == 9);
+
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+	cout << "ms1: smallest value is " << ms1.getSmallestValue(value);
+	cout << " and value is " << value << endl;
+	cout << "ms1: second smallest value is " << ms1.getSecondSmallestValue(value);
+	cout << " and value is " << value << endl;
+	cout << "ms1: leastfrequentvalue is " << ms1.getLeastFrequentValue(value);
+	cout << " and value is " << value << endl;
+	cout << "amount greater than 3 in ms1: " << ms1.countIf('>', 3) << endl;
+	cout << "amount less than 3 in ms1: " << ms1.countIf('<', 3) << endl;
+	cout << "amount equal 3 in ms1: " << ms1.countIf('=', 3) << endl;
+
+
+	cout << "countif test finished-----------------------" << endl;
+}
+
+void test_swap()
+{
+	cout << "--------------swap test--------------------" << endl;
+	//test if swap test works
+	Multiset ms1, ms2;
+
+	ms1.insert(1);
+	ms1.insert(2);
+	ms1.insert(3);
+	ms1.insert(4);
+	ms1.insert(5);
+	ms1.insert(6);
+	ms1.insert(7);
+	ms1.insert(8);
+
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+
+	cout << "--------ms2---------" << endl;
+	for (int i = 0; i < ms2.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms2.get(i, value);
+		cout << value << " count#: " << ms2.count(value) << endl;
+	}
+	cout << "ms2 unique size: " << ms2.uniqueSize() << endl;
+	cout << "ms2 size: " << ms2.size() << endl << endl;
+	cout << "swapping" << endl;
+	//swapping
+	ms1.swap(ms2);
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+
+	cout << "--------ms2---------" << endl;
+	for (int i = 0; i < ms2.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms2.get(i, value);
+		cout << value << " count#: " << ms2.count(value) << endl;
+	}
+	cout << "ms2 unique size: " << ms2.uniqueSize() << endl;
+	cout << "ms2 size: " << ms2.size() << endl << endl;
+	cout << "swap test finished----------------" << endl;
+}
+
+void test_copyIntoOtherMultiset()
+{
+	//test of function works and should return correct total size and item size
+	cout << "-----------------copyIntoOtherMultiset test-------------------" << endl;
+	Multiset ms1, ms2;
+	ItemType value1 = 0;
+	for (int i = 0; i < 150; i++)
+	{
+		ms1.insert(value1);
+		value1++;
+	}
+	for (int i = 0; i < 100; i++)
+	{
+		ms2.insert(value1);
+		value1++;
+	}
+
+	ItemType value = 0;
+
+	cout << endl << "--------ms1---------" << endl;;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << " ";
+		if (i % 10 == 0)
+		{
+			cout << endl;
+		}
+
+	}
+	cout << endl << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+	cout << "--------ms2---------" << endl;;
+	for (int i = 0; i < ms2.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms2.get(i, value);
+		cout << value << " count#: " << ms2.count(value) << " ";
+		if (i % 10 == 0)
+		{
+			cout << endl;
+		}
+	}
+	cout << endl << "ms2 unique size: " << ms2.uniqueSize() << endl;
+	cout << "ms2 size: " << ms2.size() << endl << endl;
+
+	cout << "---------copyintOtherMultiset ms1 into ms2---------" << endl;
+	ms1.copyIntoOtherMultiset(ms2);
+	cout << "--------ms2---------" << endl;;
+	for (int i = 0; i < ms2.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms2.get(i, value);
+		cout << value << " count#: " << ms2.count(value) << endl;
+	}
+
+	cout << "amount greater than 150 in ms2: " << ms2.countIf('>', 150) << endl;
+	cout << "amount less than 150 in ms2: " << ms2.countIf('<', 150) << endl;
+	cout << "amount equal 150 in ms2: " << ms2.countIf('=', 150) << endl;
+	cout << "ms2 unique size: " << ms2.uniqueSize() << endl;
+	cout << "ms2 size: " << ms2.size() << endl << endl;
+	cout << "ms2: smallest value is " << ms2.getSmallestValue(value);
+	cout << " and value is " << value << endl;
+	cout << "ms2: second smallest value is " << ms2.getSecondSmallestValue(value);
+	cout << " and value is " << value << endl;
+	cout << "copyIntoOtherMultiset test finished------------" << endl;
+}
+
+void test_combine()
+{
+	cout << "-----------------test combine---------------" << endl;
+	Multiset ms1, ms2, result;
+	ms1.insert(2);
+	ms1.insert(2);
+	ms1.insert(2);
+	ms1.insert(8);
+	ms1.insert(3);
+	ms1.insert(3);
+	ms1.insert(9);
+	ms1.insert(5);
+	ms2.insert(6);
+	ms2.insert(3);
+	ms2.insert(8); 
+	ms2.insert(8);
+	ms2.insert(5);
+	ms2.insert(10);
+
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+
+	cout << "--------ms2---------" << endl;
+	for (int i = 0; i < ms2.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms2.get(i, value);
+		cout << value << " count#: " << ms2.count(value) << endl;
+	}
+	cout << "ms2 unique size: " << ms2.uniqueSize() << endl;
+	cout << "ms2 size: " << ms2.size() << endl << endl;
+
+	cout << "--------result---------" << endl;
+	for (int i = 0; i < result.uniqueSize(); i++)
+	{
+		ItemType value;
+		result.get(i, value);
+		cout << value << " count#: " << result.count(value) << endl;
+	}
+	cout << "result unique size: " << result.uniqueSize() << endl;
+	cout << "result size: " << result.size() << endl << endl;
+	combine(ms1, ms2, result);
+	cout << "combining ms1 and ms2 into result" << endl;
+
+	cout << "--------result---------" << endl;
+	for (int i = 0; i < result.uniqueSize(); i++)
+	{
+		ItemType value;
+		result.get(i, value);
+		cout << value << " count#: " << result.count(value) << endl;
+	}
+	cout << "result unique size: " << result.uniqueSize() << endl;
+	cout << "result size: " << result.size() << endl << endl;
+
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+
+	cout << "combine ms1 and ms1 into result" << endl;
+	combine(ms1, ms1, result);
+
+	cout << "--------result---------" << endl;
+	for (int i = 0; i < result.uniqueSize(); i++)
+	{
+		ItemType value;
+		result.get(i, value);
+		cout << value << " count#: " << result.count(value) << endl;
+	}
+	cout << "result unique size: " << result.uniqueSize() << endl;
+	cout << "result size: " << result.size() << endl << endl;
+
+	//test for alliases permutation 
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+	combine(ms1, ms1, ms1);
+	cout << "combine ms1 and ms1 into ms1" << endl;
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+}
+
+void test_subtract()
+{
+	cout << "-----------------test subtract----------------" << endl;
+	Multiset ms1, ms2, result;
+	ms1.insert(2);
+	ms1.insert(2);
+	ms1.insert(2);
+	ms1.insert(8);
+	ms1.insert(3);
+	ms1.insert(3);
+	ms1.insert(9);
+	ms1.insert(5);
+	ms2.insert(6);
+	ms2.insert(3);
+	ms2.insert(8);
+	ms2.insert(8);
+	ms2.insert(5);
+	ms2.insert(10);
+
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+
+	cout << "--------ms2---------" << endl;
+	for (int i = 0; i < ms2.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms2.get(i, value);
+		cout << value << " count#: " << ms2.count(value) << endl;
+	}
+	cout << "ms2 unique size: " << ms2.uniqueSize() << endl;
+	cout << "ms2 size: " << ms2.size() << endl << endl;
+
+	cout << "--------result---------" << endl;
+	for (int i = 0; i < result.uniqueSize(); i++)
+	{
+		ItemType value;
+		result.get(i, value);
+		cout << value << " count#: " << result.count(value) << endl;
+	}
+	cout << "result unique size: " << result.uniqueSize() << endl;
+	cout << "result size: " << result.size() << endl << endl;
+	subtract(ms1, ms2, result);
+	cout << "--------result---------" << endl;
+	for (int i = 0; i < result.uniqueSize(); i++)
+	{
+		ItemType value;
+		result.get(i, value);
+		cout << value << " count#: " << result.count(value) << endl;
+	}
+	cout << "result unique size: " << result.uniqueSize() << endl;
+	cout << "result size: " << result.size() << endl << endl;
+
+	//test for alliases permutation 
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+	subtract(ms1, ms1, ms1);
+	cout << "subtract ms1 and ms1 into ms1" << endl;
+	cout << "--------ms1---------" << endl;
+	for (int i = 0; i < ms1.uniqueSize(); i++)
+	{
+		ItemType value;
+		ms1.get(i, value);
+		cout << value << " count#: " << ms1.count(value) << endl;
+	}
+	cout << "ms1 unique size: " << ms1.uniqueSize() << endl;
+	cout << "ms1 size: " << ms1.size() << endl << endl;
+}

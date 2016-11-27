@@ -1,0 +1,138 @@
+5a
+              			50
+
+                     20                60
+
+              10           40              70
+
+                      30       45      65       80
+	           25    35		      75
+
+5b
+
+
+              			50
+
+                     20                60
+
+              10           40              70
+
+                      30       45      65       80
+	           25    35		      75
+
+after deleting 30:
+
+				50
+
+                     20                60
+
+              10           40              70
+
+                      35       45      65       80
+	           25    		      75
+
+after deleting 20:
+				50
+
+                     10                60
+
+                           40              70
+
+                      35       45      65       80
+	           25    		      75
+
+5a 
+after inserting the nodes in part a:
+			      50
+
+                     20                60
+
+              10           40              70
+
+                      30       45      65       80
+	           25    35		      75
+
+preorder traversal:
+
+current 
+left 
+right
+
+50 20 10 40 30 25 35 45 60 70 65 80 75
+
+inorder traversal
+
+left 
+current
+right
+
+10 20 25 30 35 40 45 60 70 65 75 80
+
+post order traversal
+
+left
+right 
+current
+
+10 25 35 30 45 40 20 65 75 80 70 60 50
+
+2a:
+
+h.insert(3);
+	h.insert(5);
+	h.insert(2);
+	h.insert(1);
+	h.insert(10);
+	h.delete(5);
+	h.insert(4);
+	h.insert(8);
+	h.insert(6);
+	h.delete(10); 
+ans 
+
+                                     8
+                  2                           
+          1             4
+                             6
+
+preorder traversal:
+
+8 2 1 4 6
+
+inorder traversal:
+
+1 2 4 6 8
+
+postorder traversal:
+
+1 6 4 2 8
+
+3a
+
+struct trinode
+{
+int value;
+node* parent;
+node* left;
+node* right;
+
+}
+
+3b
+
+if the value is greater than the current node, traverse to the right
+	if the right node is pointing to a nullptr,
+                 insert new node there with left and right node pointing to nullptr and parent node pointing to the previous node
+	else
+		keep traversing recursively
+
+if the value is less than the current node,
+traverse to the left,
+	if the right node is pointing to a nullptr,
+                 insert new node there with left and right node pointing to nullptr and parent node pointing to the previous node
+
+	else
+		keep traversing recursively
+
+                           
+

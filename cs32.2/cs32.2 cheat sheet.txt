@@ -1,0 +1,53 @@
+CSNerd& operator= (const CSNerd& other)
+{
+if (this == &other)
+return *this;
+
+if (source->m_myBook == nullptr)
+cout << "error" << endl;
+
+delete m_myBook;
+m_myName = other.m_myName;
+m_myBook = new Book;
+*m_myBook = *(other.m_myBook);
+return *this;
+
+}
+
+CSNerd* operator= (const CSNerd* other)
+{
+if (this == &other)
+return *this;
+
+if (source->m_myBook == nullptr)
+cout << "error" << endl;
+
+delete m_myBook;
+m_myName = other->m_myName;
+m_myBook = new Book;
+*m_myBook = *(other->m_myBook);
+return *this;
+
+}
+int a = 7;
+int* b = a;
+int**c = &b;
+int d; 
+b // holds the address of a
+*b// holds the value of a
+c // holds the address of b
+*c // holds the value of b (which is the address of a)
+**c // holds the value of a
+
+class a(1);
+class* b = a;
+class**c = &b;
+
+a.func();
+(*b).func(); or b->func();
+(*(*c)).func()  or  (*c)->func();
+
+
+
+
+ 
